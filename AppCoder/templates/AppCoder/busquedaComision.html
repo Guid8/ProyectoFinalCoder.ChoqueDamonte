@@ -8,22 +8,19 @@
 </head>
 <body>
 
-    <h1> FORMULARIO DE CURSOS</h1>
+    <h1> BUSQUEDA DE CURSOS</h1>
 
     {% if formulario.errors %}
      <p style="color:red">ERROR</p>
      {% endif %}
 
-     <form action="/AppCoder/cursoFormulario/" method="POST"> {% csrf_token %}
+     <form action="{% url 'buscar' %}" method="GET"> {% csrf_token %}
+
+       <input type="number" name="comision" id="comision">
 
 
-        <table>
-            {{ formulario.as_table }}
-        </table>
-
-           
         <!--- -->
-        <input type="submit" value="Enviar">
+        <input type="submit" value="buscar">
 
 
 
