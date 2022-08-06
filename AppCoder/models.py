@@ -1,25 +1,29 @@
 from django.db import models
 
-class Curso(models.Model):
+class Perfil(models.Model):
     nombre=models.CharField(max_length=50)
-    comision=models.IntegerField()
+    apellido=models.IntegerField()
+    fechaDeNacimiento=models.DateField()
+    email=models.EmailField()
+    numeroDeSocio=models.IntegerField()
+
     
     def __str__(self):
-        return self.nombre+" "+str(self.comision)
+        return self.nombre+" "+str(self.apellido)
 
-class Estudiante(models.Model):
+class Socios(models.Model):
     nombre=models.CharField(max_length=50)
     apellido=models.CharField(max_length=50)
     email=models.EmailField()
+    numeroDeSocio=models.IntegerField()
+    actividad=models.CharField(max_length=50)
 
-class Profesor(models.Model):
+class Instalaciones(models.Model):
     nombre=models.CharField(max_length=50)
-    apellido=models.CharField(max_length=50)
-    email=models.EmailField()
-    profesion=models.CharField(max_length=50)
-
-class Entregable(models.Model):
-    nombre=models.CharField(max_length=50)
-    fecha_de_entrega=models.DateField()
-    entregado=models.BooleanField()
+    texto=models.CharField(max_length=150)
     
+
+class Nosotros(models.Model):
+    texto=models.CharField(max_length=150)
+
+

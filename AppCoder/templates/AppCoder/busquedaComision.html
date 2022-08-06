@@ -14,9 +14,13 @@
      <p style="color:red">ERROR</p>
      {% endif %}
 
-     <form action="{% url 'buscar' %}" method="GET"> {% csrf_token %}
+{% if error %}
+    <p style="color:red">{{ error }}</p>
+    {% endif %}
 
-       <input type="number" name="comision" id="comision">
+     <form action="{% url 'buscar' %}" method="GET">
+
+       <input type="number" name="comision" id="Cursos">
 
 
         <!--- -->

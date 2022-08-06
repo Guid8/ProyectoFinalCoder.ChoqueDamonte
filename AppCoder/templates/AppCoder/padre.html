@@ -22,11 +22,11 @@
         <!-- Navigation-->
         <nav class="navbar navbar-light bg-light static-top">
             <div class="container">
-                <a class="navbar-brand" href="{% url 'inicio' %}">MI PAGINA</a>
-                <a class="btn btn-primary" href="{% url 'estudiantes' %}">Estudiantes</a>
-                <a class="btn btn-primary" href="{% url 'profesores' %}">Profesores</a>
-                <a class="btn btn-primary" href="{% url 'cursos' %}">Cursos</a>
-                <a class="btn btn-primary" href="{% url 'entregables' %}">Entregables</a>
+                <a class="navbar-brand" href="{% url 'inicio' %}">Club Social Aoniken</a>
+                <a class="btn btn-primary" href="{% url 'perfil' %}">Perfil</a>
+                <a class="btn btn-primary" href="{% url 'socios' %}">Socios</a>
+                <a class="btn btn-primary" href="{% url 'instalaciones' %}">Instalaciones</a>
+                <a class="btn btn-primary" href="{% url 'nosotros' %}">About Us</a>
                 <a class="btn btn-primary" href="#signup">Sing Up</a>
             <div class="container position-relative">
                 <div class="row justify-content-center">
@@ -55,7 +55,7 @@
 
         {% block contenido_que_cambia %}
 
-       {% endblock %}
+        {% endblock %}
         <!-- Icons Grid-->
         <section class="features-icons bg-light text-center">
             <div class="container">
