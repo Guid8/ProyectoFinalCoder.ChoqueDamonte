@@ -4,7 +4,7 @@
 
 {% block contenido_que_cambia %}
 
-<h1>EDITANDO EL PROFE: {{ nombre_profesor }}</h1>
+<h1>EDITANDO EL SOCIO: {{ nombre_socio }}</h1>
 
 </h1>
 {% if form.errors %}
@@ -12,7 +12,7 @@
 <p style="color:red"> HAY ALGO MAL EN EL FORMULARIO </p>
 {% endif %}
 
-<form action="{% url 'editarProfesor' nombre_profesor %}" method="POST"> {% csrf_token %} 
+<form action="{% url 'editarSocio' nombre_socio %}" method="POST"> {% csrf_token %} 
 
 
 
@@ -20,7 +20,7 @@
         {{formulario.as_table}}
     </table>
 
-       
+    
     
     <input type="submit" value="Enviar">
 

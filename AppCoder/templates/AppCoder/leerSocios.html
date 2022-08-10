@@ -4,19 +4,19 @@
 
 {% block contenido_que_cambia %}
 
-{% for profesor in profesores %}
+{% for socios in socios %}
 
-    <li>{{ profesor }}</li>
+    <li>{{ socios }}</li>
     <button>
-        <a href="{% url 'eliminarProfesor' profesor.nombre %}">eliminarProfe</a>
+        <a href="{% url 'eliminarSocio' socios.nombre %}">eliminarSocio</a>
     </button>
 
     <button>
-        <a href="{% url 'editarProfesor' profesor.nombre %}">editarProfe</a>
+        <a href="{% url 'editarSocio' socios.nombre %}">editarSocio</a>
     </button>
 
 {% endfor %}
 
-<a href="{% url 'profeFormulario' %}">agregar nuevo profe</a>
+<a href="{% url 'socioFormulario' %}">agregar nuevo socio</a>
 
 {% endblock %}

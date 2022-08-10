@@ -1,0 +1,15 @@
+{% extends "AppCoder/padre.html" %}
+
+{% load static %}
+
+{% block contenido_que_cambia %}
+
+{% for socio in object_list %}
+
+    <li>{{ socio }}</li>
+    
+
+{% endfor %}
+
+
+{% endblock %}

@@ -4,22 +4,22 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>RESULTADOS</title>
 </head>
 <body>
 
     <h1>RESULTADOS DE LA BUSQUEDA</h1>
-    {% if cursos %}
+    {% if socios %}
 
     <ul>
-      {% for curso in cursos %}
-          <li>{{ curso.nombre }}</li>
-          <li>{{ curso.comision }}</li>
-          <br>
-      {% endfor %}
+    {% for socio in socios %}
+        <li>{{ socios.nombre }}</li>
+        <li>{{ socios.apellido }}</li>
+        <br>
+    {% endfor %}
     </ul>   
     {% else %}
-       <p> no hay cursos con esa descripcion</p>
+    <p> no hay socios con esa descripcion</p>
     {% endif %}
     
 </body>
