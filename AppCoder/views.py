@@ -1,11 +1,24 @@
 from django import http
 from django.shortcuts import render
-from AppCoder.models import Socios, Nosotros, Instalaciones
+from AppCoder.models import Socios, Nosotros, Instalaciones, Avatar
 from django.http import HttpResponse
-from AppCoder.forms import SociosForm
+from AppCoder.forms import SociosForm, UserRegisterForm, UserEditForm, AvatarForm
 from django.views.generic import ListView, DetailView,CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 
+from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
+
+
+@login_required
+def avatares(request):
+    imagen=Avatar.objects.filter(user= request.user.id)[0].imagen.url
+    return render(request, "AppCoder/avatares.html", {"imagen":imagen}) 
+
+def canchaGolf(request):
+    return render(request, "AppCoder/canchaGolf.html")  
 
 
 
@@ -16,11 +29,10 @@ def instalaciones(request):
     return render(request, "AppCoder/instalaciones.html")   
 
 def nosotros(request):
-    return render(request, "AppCoder/nosotros.html")     
+    return render(request, "AppCoder/nosotros.html")
 
+@login_required
 def socioFormulario(request):
-
-
     if request.method=="POST":
         form= SociosForm(request.POST)
         print(form)
@@ -36,7 +48,7 @@ def socioFormulario(request):
         form= SociosForm()        
     return render (request, "AppCoder/socioFormulario.html", {"form":form})
 
-
+@login_required
 def sociosFormulario(request):
     if (request.method== "POST"):
         form= SociosForm(request.POST)
@@ -52,7 +64,7 @@ def sociosFormulario(request):
     else:
         form= SociosForm()  
     return render (request, "AppCoder/socioForm.html", {"form":form})
-
+@login_required
 def eliminarSocio(request, nombre_socio):
     socios= Socios.objects.get(nombre=nombre_socio)
     socios.delete()
@@ -60,11 +72,12 @@ def eliminarSocio(request, nombre_socio):
     socios= Socios.objects.all()
     return render(request, "AppCoder/leerSocios.html", {"socios":socios})
 
+@login_required
 def busquedaSocios(request):
     return render (request, "AppCoder/busquedaSocios.html")
 
 
-
+@login_required
 def buscar(request):
     if request.GET["apellido"]:
         apellido= request.GET["apellido"]
@@ -73,11 +86,12 @@ def buscar(request):
     else:
         return render(request, "AppCoder/busquedaSocios.html", {"error":"no se ingreso ninguna comision"})    
 
-
+@login_required
 def leerSocios(request):
     socios= Socios.objects.all()
     return render(request, "AppCoder/leerSocios.html", {"socios":socios})
 
+@login_required
 def editarSocio(request, nombre_socio):
     socios= Socios.objects.get(nombre=nombre_socio)
     if request.method=="POST":
@@ -98,25 +112,98 @@ def editarSocio(request, nombre_socio):
     "nombre_socio":nombre_socio})
 
 
-class sociosList(ListView):
+class sociosList(ListView, LoginRequiredMixin):
     model=Socios
     template_name= "AppCoder/SociosList.html"
 
-class sociosDetalle(DetailView):
+class sociosDetalle(DetailView, LoginRequiredMixin):
     model=Socios
     template_name="Appcoder/socios_detalle.html"
 
-class sociosUpdate(UpdateView):
+class sociosUpdate(UpdateView, LoginRequiredMixin):
     model = Socios
     success_url = reverse_lazy('socios_listar')
     fields= ['nombre','apellido','email']  
 
 
-class sociosCreacion(CreateView):
+class sociosCreacion(CreateView, LoginRequiredMixin):
     model = Socios
     success_url = reverse_lazy('socios_listar')
     fields= ['nombre','apellido','email']
 
-class sociosDelete(DeleteView):
+class sociosDelete(DeleteView, LoginRequiredMixin):
     model = Socios
     success_url = reverse_lazy('socios_listar')
+
+
+def login_request(request):
+    if request.method=="POST":
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid:
+            usu= request.POST['username']
+            clave= request.POST['password']
+
+            usuario = authenticate(username=usu, password=clave)
+            print(usuario)
+            if usuario is not None:
+                login(request, usuario)
+                return render(request, 'AppCoder/inicio.html', {'form':form,'mensaje':f"Bienvenido {usuario}"})
+            else:
+                return render(request, 'AppCoder/login.html', {'form':form, 'mensaje':'usuario o clave incorrectos'})
+                
+        else:
+            return render(request, 'AppCoder/login.html', {'form':form, 'mensaje':'FORMULARIO INVALIDO'})
+    
+    else:
+        form = AuthenticationForm()
+        return render(request, 'AppCoder/login.html', {'form':form})
+
+def register(request):
+    if request.method == "POST":
+        form = UserRegisterForm(request.POST)
+        if form.is_valid():
+                username = form.cleaned_data["username"]
+
+                form.save()
+                return render(request, 'AppCoder/inicio.html', {'form':form,'mensaje':f"Usuario Creado : {username}"})
+
+    else:
+        form = UserRegisterForm()
+    return render(request, 'AppCoder/register.html', {'form': form})
+
+
+@login_required
+def editarPerfil(request):
+    usuario=request.user
+    if request.method=="POST":
+        form = UserEditForm(request.POST, instance=usuario)
+        if form.is_valid():
+                info = form.cleaned_data
+                usuario.email=info['email']
+                usuario.password1=info['password1']
+                usuario.password2=info['password2']
+                usuario.save()
+                return render(request, 'AppCoder/inicio.html', {'usuario':usuario,'mensaje':'USUARIO EDITADO EXITOSAMENTE!'})
+    else:
+        form = UserEditForm(instance=usuario)
+    return render(request, 'AppCoder/editarPerfil.html', {'form': form, 'usuario':usuario.username})
+
+
+def agregarAvatar(request):
+    if request.method=="POST":
+        form= AvatarForm(request.POST, request.FILES)
+        if form.is_valid():
+            avatarViejo=Avatar.objects.get(user=request.user)
+            if (avatarViejo.imagen):
+                avatarViejo.delete()
+            avatar=Avatar(user=request.user, imagen=form.cleaned_data['imagen']) 
+            avatar.save()
+            return render(request, 'AppCoder/inicio.html', {'usuario':request.user,'mensaje':'AVATAR EXITOSAMENTE!'})
+    else:
+        form=AvatarForm()
+    return render(request, 'AppCoder/agregarAvatar.html', {'form': form, 'usuario':request.user})
+
+
+
+
+
